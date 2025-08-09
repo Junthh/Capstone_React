@@ -14,8 +14,19 @@ export const getListMovieApi = async (maNhom, soTrang, soPhanTuTrenTrang) => {
 export const getMovieDetailsApi = async (movieId) => {
   try {
     const response = await api.get(`/QuanLyPhim/LayThongTinPhim?MaPhim=${movieId}`);
+    // console.log("🚀 ~ getMovieDetails ~ response:", response.data.content);
     return response.data.content
   } catch (error) {
     console.log("⚡️ ~ getMovieDetails ~ error:", error);
+  }
+};
+
+export const getMovieScheduleApi = async (movieId) => {
+  try {
+    const response = await api.get(`/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${movieId}`);
+    // console.log("🚀 ~ getMovieDetailsApi ~ response:", response.data.content);
+    return response.data.content
+  } catch (error) {
+    console.log("⚡️ ~ getMovieDetailsApi ~ error:", error);
   }
 };
