@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MovieSchedule({ schedule, formatDateTime }) {
+  const navigate = useNavigate();
+  
   const [selectedHeThong, setSelectedHeThong] = useState(
     schedule.length > 0 ? schedule[0].maHeThongRap : null
   );
@@ -22,6 +25,10 @@ export default function MovieSchedule({ schedule, formatDateTime }) {
       setSelectedCumRap(null);
     }
   }, [selectedHeThong]);
+
+  const handleBookTicket = (maLichChieu) => {
+    navigate(`/ticket-room/${maLichChieu}`);
+  };
 
   return (
     <div className="flex gap-6">
@@ -80,9 +87,7 @@ export default function MovieSchedule({ schedule, formatDateTime }) {
                       <button
                         key={lich.maLichChieu}
                         className="px-4 py-2 border rounded-lg text-sm hover:bg-red-600 hover:text-white transition"
-                        onClick={() =>
-                          alert(`Bạn chọn suất chiếu mã ${lich.maLichChieu}`)
-                        }
+                        onClick={() => handleBookTicket(lich.maLichChieu)}
                         title={`Rạp: ${lich.tenRap}\nThời gian: ${formatDateTime(
                           lich.ngayChieuGioChieu
                         )}\nGiá vé: ${lich.giaVe.toLocaleString()} VND\nThời lượng: ${

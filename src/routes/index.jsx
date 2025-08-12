@@ -5,6 +5,7 @@ import MovieDetailsPage from "../pages/HomeTemplate/MovieDetailsPage";
 import ListMoviePage from "../pages/HomeTemplate/ListMoviePage";
 import LoginPage from "../pages/HomeTemplate/LoginPage";
 import RegisterPage from "../pages/HomeTemplate/RegisterPage";
+import TicketRoomPage from "../pages/HomeTemplate/TicketRoomPage";
 import HomeTemplate from "../pages/HomeTemplate";
 import AdminTemplate from "../pages/AdminTemplate"
 import Dashboard from "../pages/AdminTemplate/Dashboard";
@@ -45,6 +46,10 @@ const routes = [
       {
         path: "movie-detail/:movieId",
         element: MovieDetailsPage,
+      },
+      {
+        path: "ticket-room/:maLichChieu",
+        element: TicketRoomPage,
       },
     ],
   },
