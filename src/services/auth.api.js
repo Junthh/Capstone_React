@@ -25,3 +25,14 @@ export const registerApi = async (values) => {
     throw new Error(message);
   }
 };
+
+export const getUserInfoApi = async () => {
+  try {
+    const response = await api.post('/QuanLyNguoiDung/ThongTinTaiKhoan');
+    return response.data.content;
+  } catch (error) {
+    console.log('🔥 ~ getUserInfoApi ~ error:', error);
+    const message = error.response?.data?.content || error.response?.data?.message || "Không thể tải thông tin tài khoản!";
+    throw new Error(message);
+  }
+}
