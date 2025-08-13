@@ -5,7 +5,7 @@ import { clearUser } from "../../../../store/auth.slice";
 
 const navLinks = [
   { title: "Trang Chủ", path: "/" },
-  { title: "Danh Sách Phim", path: "/list-movie" },
+  { title: "Lịch Sử Mua vé", path: "/booking-history" },
 ];
 
 export default function Header() {
@@ -22,7 +22,6 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm mb-3">
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo */}
         <a href="/" className="flex items-center space-x-2">
           <img
             src="https://flowbite.com/docs/images/logo.svg"
@@ -31,8 +30,6 @@ export default function Header() {
           />
           <span className="text-gray-800 font-bold text-lg">Movie</span>
         </a>
-
-        {/* Menu + Auth */}
         <ul className="flex items-center space-x-6 font-medium">
           {navLinks.map(({ title, path }) => (
             <li key={path}>

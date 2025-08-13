@@ -2,7 +2,7 @@
 import { Route } from "react-router-dom";
 import HomePage from "../pages/HomeTemplate/HomePage";
 import MovieDetailsPage from "../pages/HomeTemplate/MovieDetailsPage";
-import ListMoviePage from "../pages/HomeTemplate/ListMoviePage";
+import BookingHistory from "../pages/HomeTemplate/BookingHistory";
 import LoginPage from "../pages/HomeTemplate/LoginPage";
 import RegisterPage from "../pages/HomeTemplate/RegisterPage";
 import TicketRoomPage from "../pages/HomeTemplate/TicketRoomPage";
@@ -28,8 +28,8 @@ const routes = [
         element: "",
       },
       {
-        path: "list-movie",
-        element: ListMoviePage,
+        path: "booking-history",
+        element: BookingHistory,
       },
       {
         path: "news",
