@@ -50,3 +50,27 @@ export const deleteUserApi = async (taiKhoan) => {
     console.error("Lỗi khi gọi API:", error);
   }
 };
+
+
+export const updateUserApi = async (payload) => {
+  try {
+    // payload là object JSON đúng shape ở trên
+    const res = await api.put(`/QuanLyNguoiDung/CapNhatThongTinNguoiDung`, payload);
+    return res.data.content;
+  } catch (error) {
+    console.error("Lỗi khi gọi API:", error);
+    throw error; 
+  }
+};
+
+
+
+export const getUserTKApi = async (taiKhoan) => {
+  try {
+    const res = await api.post(`/QuanLyNguoiDung/ThongTinTaiKhoan?taiKhoan=${taiKhoan}`);
+    return res.data.content;
+  } catch (error) {
+    console.error("Lỗi khi gọi API:", error);
+    throw error; 
+  }
+};

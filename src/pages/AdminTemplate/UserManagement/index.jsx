@@ -47,6 +47,10 @@ export default function UserManagement() {
     navigation("/admin/user-mmanagement/add-user");
   };
 
+  const handleEditUser = (taiKhoan) => {
+    navigation(`/admin/user-mmanagement/edit-user/${taiKhoan}`)
+  }
+
   const handleDeleteUser = (taiKhoan) => {
     const ok = window.confirm("Bạn có chắc muốn xóa người dùng này?");
     if (!ok) return;
@@ -150,7 +154,7 @@ export default function UserManagement() {
                 <td className="px-6 py-4 ">
                   <div className="flex gap-3">
                     {/* Sửa */}
-                    <button>
+                    <button onClick={() => handleEditUser(user.taiKhoan)}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-6 h-6 text-blue-500 hover:text-blue-700 cursor-pointer"

@@ -16,17 +16,17 @@ const schema = z.object({
   maLoaiNguoiDung: z.string().min(1, "Vui lòng chọn loại người dùng"),
 });
 
-function valuesToFormData(values) {
-  const formData = new FormData();
-  formData.append("taiKhoan", values.taiKhoan);
-  formData.append("matKhau", values.matKhau);
-  formData.append("email", values.email);
-  formData.append("soDt", values.soDt);
-  formData.append("maNhom", values.maNhom || "GP01");
-  formData.append("maLoaiNguoiDung", values.maLoaiNguoiDung);
-  formData.append("hoTen", values.hoTen);
-  return formData;
-}
+// function valuesToFormData(values) {
+//   const formData = new FormData();
+//   formData.append("taiKhoan", values.taiKhoan);
+//   formData.append("matKhau", values.matKhau);
+//   formData.append("email", values.email);
+//   formData.append("soDt", values.soDt);
+//   formData.append("maNhom", values.maNhom || "GP01");
+//   formData.append("maLoaiNguoiDung", values.maLoaiNguoiDung);
+//   formData.append("hoTen", values.hoTen);
+//   return formData;
+// }
 
 export default function AddUser() {
   const navigate = useNavigate();

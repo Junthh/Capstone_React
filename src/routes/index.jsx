@@ -14,6 +14,7 @@ import EditMovie from "../pages/AdminTemplate/EditMovie";
 import ShowTimeMovie from "../pages/AdminTemplate/ShowTimeMovie";
 import UserManagement from "../pages/AdminTemplate/UserManagement";
 import AddUser from "../pages/AdminTemplate/AddUser";
+import EditUser from "../pages/AdminTemplate/EditUser";
 
 
 const routes = [
@@ -84,8 +85,8 @@ const routes = [
         element: AddUser,
       },
       {
-        path: "user-mmanagement/edit-user/:userId",
-        element: AddUser,
+        path: "user-mmanagement/edit-user/:taiKhoan",
+        element: EditUser,
       }
     ],
   },
