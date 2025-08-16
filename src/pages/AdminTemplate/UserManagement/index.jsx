@@ -11,13 +11,14 @@ export default function UserManagement() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [deletingId, setDeletingId] = useState(null);
+  const [search, setSearch] = useState("");
 
   const navigation = useNavigate();
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["manager-user", page, pageSize],
-    queryFn: () => getListUserApi(page, pageSize),
+    queryFn: () => getListUserApi(page, pageSize, search),
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
@@ -38,18 +39,22 @@ export default function UserManagement() {
   if (isLoading) return <Loading />;
   if (isError) return <Error onRetry={refetch} />;
 
-  const users = data?.items ?? [];
+  const users = (data?.items ?? []).filter(
+    (u) =>
+      u.taiKhoan.toLowerCase().includes(search.toLowerCase()) ||
+      u.hoTen.toLowerCase().includes(search.toLowerCase())
+  );
   const currentPage = data?.currentPage ?? 1;
   const totalPages = data.totalPages ?? 1;
   const offset = (currentPage - 1) * pageSize;
 
   const handleAddUser = () => {
-    navigation("/admin/user-mmanagement/add-user");
+    navigation("/admin/user-management/add-user");
   };
 
   const handleEditUser = (taiKhoan) => {
-    navigation(`/admin/user-mmanagement/edit-user/${taiKhoan}`)
-  }
+    navigation(`/admin/user-management/edit-user/${taiKhoan}`);
+  };
 
   const handleDeleteUser = (taiKhoan) => {
     const ok = window.confirm("Bạn có chắc muốn xóa người dùng này?");
@@ -71,11 +76,16 @@ export default function UserManagement() {
           <div className="relative">
             <input
               type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1); // reset về trang 1 khi search
+              }}
               placeholder="Tìm kiếm tài khoản hoặc họ tên người..."
               className="w-64 py-2.5 pl-10 pr-4 text-sm text-gray-900 
-                     bg-white border border-gray-200 rounded-lg
-                     focus:outline-none focus:ring-4 focus:ring-gray-100 
-                     hover:border-gray-300 transition"
+         bg-white border border-gray-200 rounded-lg
+         focus:outline-none focus:ring-4 focus:ring-gray-100 
+         hover:border-gray-300 transition"
             />
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"

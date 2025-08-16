@@ -1,9 +1,11 @@
 
 import { Route } from "react-router-dom";
 import HomePage from "../pages/HomeTemplate/HomePage";
-import ListMoviePage from "../pages/HomeTemplate/ListMoviePage";
+import MovieDetailsPage from "../pages/HomeTemplate/MovieDetailsPage";
+import BookingHistory from "../pages/HomeTemplate/BookingHistory";
 import LoginPage from "../pages/HomeTemplate/LoginPage";
 import RegisterPage from "../pages/HomeTemplate/RegisterPage";
+import TicketRoomPage from "../pages/HomeTemplate/TicketRoomPage";
 import HomeTemplate from "../pages/HomeTemplate";
 import AdminTemplate from "../pages/AdminTemplate"
 import Dashboard from "../pages/AdminTemplate/Dashboard";
@@ -31,8 +33,8 @@ const routes = [
         element: "",
       },
       {
-        path: "list-movie",
-        element: ListMoviePage,
+        path: "booking-history",
+        element: BookingHistory,
       },
       {
         path: "news",
@@ -48,7 +50,11 @@ const routes = [
       },
       {
         path: "movie-detail/:movieId",
-        element: "",
+        element: MovieDetailsPage,
+      },
+      {
+        path: "ticket-room/:maLichChieu",
+        element: TicketRoomPage,
       },
     ],
   },
@@ -81,11 +87,11 @@ const routes = [
         element: UserManagement,
       },
       {
-        path: "user-mmanagement/add-user",
+        path: "user-management/add-user",
         element: AddUser,
       },
       {
-        path: "user-mmanagement/edit-user/:taiKhoan",
+        path: "user-management/edit-user/:taiKhoan",
         element: EditUser,
       }
     ],

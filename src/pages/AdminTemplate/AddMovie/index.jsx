@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { createMovieApi } from "../../../services/movie.api";
+import { createMovieApi } from "../../../services/movieAd.api";
 
 const schema = z.object({
   tenPhim: z.string().min(1, "vui lòng nhập thông tin"),

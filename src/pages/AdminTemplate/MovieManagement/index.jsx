@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteMovieApi, getListMovieApi } from "../../../services/movie.api";
+import { deleteMovieApi, getListMovieApi } from "../../../services/movieAd.api";
 import Loading from "../_Components/Loading";
 import Error from "../_Components/Error";
 import PageSize from "../_Components/PageSize";
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function MovieManagement() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const navigation = useNavigate();
   const queryClient = useQueryClient();
@@ -60,6 +61,18 @@ export default function MovieManagement() {
     navigation(`/admin/movies-management/show-time/${movieId}`);
   };
 
+  const normalize = (str) =>
+    str
+      .toLowerCase()
+      .normalize("NFD") // tách dấu
+      .replace(/[\u0300-\u036f]/g, ""); // xoá dấu
+
+  const filteredMovies = searchTerm
+    ? movies.filter((movie) =>
+        normalize(movie.tenPhim).includes(normalize(searchTerm))
+      )
+    : movies;
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -73,9 +86,11 @@ export default function MovieManagement() {
               type="text"
               placeholder="Tìm kiếm phim..."
               className="w-64 py-2.5 pl-10 pr-4 text-sm text-gray-900 
-                     bg-white border border-gray-200 rounded-lg
-                     focus:outline-none focus:ring-4 focus:ring-gray-100 
-                     hover:border-gray-300 transition"
+         bg-white border border-gray-200 rounded-lg
+         focus:outline-none focus:ring-4 focus:ring-gray-100 
+         hover:border-gray-300 transition"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -129,7 +144,7 @@ export default function MovieManagement() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {movies.map((movie) => (
+            {filteredMovies.map((movie) => (
               <tr
                 key={movie.maPhim}
                 className="odd:bg-white even:bg-gray-50 border-b border-gray-200 hover:bg-gray-100 transition"
@@ -145,7 +160,7 @@ export default function MovieManagement() {
                   <img
                     src={movie.hinhAnh}
                     alt={movie.biDanh || movie.tenPhim}
-                    className="w-16 h-24 object-cover rounded-md border border-gray-200"
+                    className="w-16 h-24 object-cover rounded-md border border-gray-200 mx-auto"
                   />
                 </td>
 
@@ -210,18 +225,22 @@ export default function MovieManagement() {
           </tbody>
         </table>
       </div>
-      <PageSize
-        pageSize={pageSize}
-        setPageSize={(n) => {
-          setPageSize(n);
-          setPage(1); // reset về trang 1 khi đổi pageSize
-        }}
-      />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      {!searchTerm && (
+        <>
+          <PageSize
+            pageSize={pageSize}
+            setPageSize={(n) => {
+              setPageSize(n);
+              setPage(1);
+            }}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </>
+      )}
     </div>
   );
 }

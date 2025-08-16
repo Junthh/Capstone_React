@@ -16,18 +16,6 @@ const schema = z.object({
   maLoaiNguoiDung: z.string().min(1, "Vui lòng chọn loại người dùng"),
 });
 
-// function valuesToFormData(values) {
-//   const formData = new FormData();
-//   formData.append("taiKhoan", values.taiKhoan);
-//   formData.append("matKhau", values.matKhau);
-//   formData.append("email", values.email);
-//   formData.append("soDt", values.soDt);
-//   formData.append("maNhom", values.maNhom || "GP01");
-//   formData.append("maLoaiNguoiDung", values.maLoaiNguoiDung);
-//   formData.append("hoTen", values.hoTen);
-//   return formData;
-// }
-
 export default function AddUser() {
   const navigate = useNavigate();
 
@@ -48,12 +36,16 @@ export default function AddUser() {
   const { mutate, isPending } = useMutation({
     mutationFn: createUserApi, // phải nhận FormData; nếu API cần JSON thì gửi thẳng "values"
     onSuccess: () => {
-      alert("Thêm người dùng thành công");
+      alert("Tạo thành công!");
       navigate("/admin/user-management");
     },
-    onError: (err) => {
-      alert("Thêm người dùng thất bại");
-      console.error(err);
+    onError: (error) => {
+      const res = error?.response?.data;
+      if (res?.content) {
+        alert(res.content); // 👉 show "Tài khoản đã tồn tại!"
+      } else {
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
+      }
     },
   });
 

@@ -5,7 +5,7 @@ import {
   getSystemInfoCinema,
 } from "../../../services/Cinema.api";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMovieIdApi } from "../../../services/movie.api";
+import { getMovieIdApi } from "../../../services/movieAd.api";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

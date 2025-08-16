@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTypeUser, getUserTKApi, updateUserApi } from "../../../services/user.api";
+import { getTypeUser, getUserByAccount, updateUserApi } from "../../../services/user.api";
 
 // (tuỳ bạn, có thể bật lại validate)
 const schema = z.object({
@@ -18,15 +18,15 @@ const schema = z.object({
 });
 
 export default function EditUser() {
-  const { taiKhoan } = useParams();
+  const { taiKhoan: routeTK } = useParams();
   const navigate = useNavigate();
 
   const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: {
-      taiKhoan: taiKhoan || "",
+      taiKhoan: routeTK || "",
       matKhau: "",
       email: "",
-      soDt: "",                // ✅ đúng key backend
+      soDt: "",
       maNhom: "GP01",
       hoTen: "",
       maLoaiNguoiDung: "",
@@ -35,59 +35,56 @@ export default function EditUser() {
   });
   const { errors } = formState;
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: updateUserApi, // ✅ truyền thẳng payload JSON
-    onSuccess: () => {
-      alert("Cập nhật người dùng thành công");
-      navigate("/admin/user-management");
-    },
-    onError: (error) => {
-      if (error?.response) {
-        console.log("STATUS:", error.response.status);
-        console.log("DATA:", error.response.data);
-      }
-      alert("Cập nhật thất bại");
-      console.error(error);
-    },
-  });
-
   const { data: type = [] } = useQuery({
     queryKey: ["type-user"],
     queryFn: getTypeUser,
   });
 
+  // ❗ CHỈ GỌI API THEO routeTK
   const { data: user } = useQuery({
-    queryKey: ["edit-user", taiKhoan],
-    queryFn: () => getUserTKApi(taiKhoan),
-    enabled: !!taiKhoan,
+    queryKey: ["edit-user", routeTK],
+    queryFn: () => getUserByAccount(routeTK),
+    enabled: !!routeTK,
+    staleTime: 0,
   });
 
   useEffect(() => {
+    console.log("routeTK:", routeTK);
+    console.log("user (fetched by routeTK):", user);
+
     if (!user) return;
 
-    // Lấy đúng key backend:
-    // - soDt trong form ← map từ user.soDT (API trả T hoa)
-    // - maLoaiNguoiDung ưu tiên object lồng nếu có
     const mappedLoai =
       user?.loaiNguoiDung?.maLoaiNguoiDung ??
       user?.maLoaiNguoiDung ??
       "";
 
     reset({
-      taiKhoan: user.taiKhoan ?? taiKhoan ?? "",
-      matKhau: user.matKhau ?? "",
+      taiKhoan: user.taiKhoan ?? routeTK ?? "",
+      matKhau: "",                    // thường API không trả mật khẩu
       hoTen: user.hoTen ?? "",
       email: user.email ?? "",
-      soDt: user.soDT ?? "",             // ✅ đúng: soDt
-      maLoaiNguoiDung: mappedLoai,       // ✅ khớp option
+      soDt: user.soDT ?? "",          // API hay là soDT (T hoa)
+      maLoaiNguoiDung: mappedLoai,
       maNhom: user.maNhom ?? "GP01",
     });
-  }, [user, reset, taiKhoan]);
+  }, [user, reset, routeTK]);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateUserApi,
+    onSuccess: () => {
+      alert("Cập nhật người dùng thành công");
+      navigate("/admin/user-management");
+    },
+    onError: (error) => {
+      console.log("Update error:", error?.response?.data || error);
+      alert("Cập nhật thất bại");
+    },
+  });
 
   const onSubmit = (values) => {
-    // values đã đúng shape backend yêu cầu
-    // { taiKhoan, matKhau, email, soDt, maNhom, maLoaiNguoiDung, hoTen }
-    console.log("payload gửi đi:", values);
+    // Ép lại cho chắc: chỉ cập nhật user đúng với URL
+    values.taiKhoan = routeTK || values.taiKhoan;
     mutate(values);
   };
 

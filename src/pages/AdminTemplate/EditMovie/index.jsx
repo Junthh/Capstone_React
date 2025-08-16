@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMovieIdApi, updateMovieApi } from "../../../services/movie.api";
+import { getMovieIdApi, updateMovieApi } from "../../../services/movieAd.api";
 import { format, parse } from "date-fns"; // thay parseISO bằng parse
 import { useForm } from "react-hook-form";
 import { useMemo, useEffect } from "react";

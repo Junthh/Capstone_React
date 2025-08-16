@@ -11,6 +11,10 @@ export default function AdminTemplate() {
     return <Navigate to="/login" replace />;
   }
 
+  if (user.maLoaiNguoiDung !== "QuanTri") {
+    return <Navigate to="/" replace />;
+  }
+  
   return (
     <>
       <SideBar />
