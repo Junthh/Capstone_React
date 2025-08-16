@@ -12,6 +12,7 @@ export default function Header() {
   const user = useSelector((state) => state.authSlice.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const handleLogout = () => {
     localStorage.clear();
     dispatch(clearUser());

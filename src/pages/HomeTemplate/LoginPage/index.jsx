@@ -28,7 +28,7 @@ export default function LoginPage() {
       // Lưu lên store để chia sẽ dữ liệu với các component khác
       dispatch(setUser(user));
 
-      navigate(user.maLoaiNguoiDung === "QuanTri" ? "/admin/dashboard" : "/");
+      navigate(user.maLoaiNguoiDung === "QuanTri" ? "/admin/movies-management" : "/");
     },
     onError: () => {
       alert("login failed");
@@ -49,7 +49,7 @@ export default function LoginPage() {
   // Nếu đã login thì redirect
   const user = JSON.parse(localStorage.getItem("user"));
   if (user && user.maLoaiNguoiDung === "QuanTri") {
-    return <Navigate to="/admin/dashboard" />;
+    return <Navigate to="/admin/movies-management" />;
   }
 
   if (user && user.maLoaiNguoiDung !== "QuanTri") {

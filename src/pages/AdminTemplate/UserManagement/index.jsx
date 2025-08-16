@@ -1,31 +1,32 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteMovieApi, getListMovieApi } from "../../../services/movie.api";
 import Loading from "../_Components/Loading";
 import Error from "../_Components/Error";
 import PageSize from "../_Components/PageSize";
 import Pagination from "../_Components/Pagination";
 import { useNavigate } from "react-router-dom";
+import { deleteUserApi, getListUserApi } from "../../../services/user.api";
 
-export default function MovieManagement() {
+export default function UserManagement() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [deletingId, setDeletingId] = useState(null);
+
   const navigation = useNavigate();
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["manager-movie", page, pageSize],
-    queryFn: () => getListMovieApi(page, pageSize),
+    queryKey: ["manager-user", page, pageSize],
+    queryFn: () => getListUserApi(page, pageSize),
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
 
-  const { mutate: deleteMovie } = useMutation({
-    mutationFn: (id) => deleteMovieApi(id),
+  const { mutate: deteleUser } = useMutation({
+    mutationFn: (taiKhoan) => deleteUserApi(taiKhoan),
     onSuccess: () => {
       // reload lại danh sách trang hiện tại
-      queryClient.invalidateQueries({ queryKey: ["manager-movie"] });
+      queryClient.invalidateQueries({ queryKey: ["manager-user"] });
     },
     onError: (err) => {
       console.error(err);
@@ -37,41 +38,36 @@ export default function MovieManagement() {
   if (isLoading) return <Loading />;
   if (isError) return <Error onRetry={refetch} />;
 
-  const movies = data?.items ?? [];
+  const users = data?.items ?? [];
   const currentPage = data?.currentPage ?? 1;
   const totalPages = data.totalPages ?? 1;
+  const offset = (currentPage - 1) * pageSize;
 
-  const handleAddMovie = () => {
-    navigation("/admin/movies-management/add-movie");
+  const handleAddUser = () => {
+    navigation("/admin/user-mmanagement/add-user");
   };
 
-  const handleEditMovie = (movieId) => {
-    navigation(`/admin/movies-management/edit-movie/${movieId}`);
-  };
-
-  const handleDeleteMovie = (movieId) => {
-    const ok = window.confirm("Bạn có chắc muốn xóa phim này?");
+  const handleDeleteUser = (taiKhoan) => {
+    const ok = window.confirm("Bạn có chắc muốn xóa người dùng này?");
     if (!ok) return;
-    setDeletingId(movieId);
-    deleteMovie(movieId);
-  };
-
-  const handledShowTimesMovie = (movieId) => {
-    navigation(`/admin/movies-management/show-time/${movieId}`);
+    setDeletingId(taiKhoan);
+    deteleUser(taiKhoan);
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 text-left">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h2 className="text-xl font-semibold text-gray-800">Quản lý phim</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          Quản lý người dùng
+        </h2>
 
         <div className="flex items-center gap-3">
           {/* Ô search */}
           <div className="relative">
             <input
               type="text"
-              placeholder="Tìm kiếm phim..."
+              placeholder="Tìm kiếm tài khoản hoặc họ tên người..."
               className="w-64 py-2.5 pl-10 pr-4 text-sm text-gray-900 
                      bg-white border border-gray-200 rounded-lg
                      focus:outline-none focus:ring-4 focus:ring-gray-100 
@@ -92,16 +88,16 @@ export default function MovieManagement() {
             </svg>
           </div>
 
-          {/* Nút thêm phim */}
+          {/* Nút thêm người dùng*/}
           <button
             type="button"
             className="py-2.5 px-5 text-sm font-medium text-gray-900 
                    focus:outline-none bg-white rounded-lg border border-gray-200 
                    hover:bg-gray-100 hover:text-blue-700 
                    focus:z-10 focus:ring-4 focus:ring-gray-100"
-            onClick={handleAddMovie}
+            onClick={handleAddUser}
           >
-            Thêm phim
+            Thêm người dùng
           </button>
         </div>
       </div>
@@ -111,17 +107,23 @@ export default function MovieManagement() {
         <table className=" table-fixed w-full text-sm text-gray-700">
           <thead className="bg-gray-50 text-xs uppercase text-gray-600">
             <tr>
-              <th scope="col" className="px-6 py-3">
-                Mã phim
+              <th scope="col" className="px-6 py-3 w-[100px]">
+                STT
               </th>
               <th scope="col" className="px-6 py-3">
-                Hình ảnh
+                Tài khoản
               </th>
               <th scope="col" className="px-6 py-3">
-                Tên phim
+                Mật khẩu
               </th>
               <th scope="col" className="px-6 py-3">
-                Mô tả
+                Họ tên
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Email
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Số điện thoại
               </th>
               <th scope="col" className="px-6 py-3">
                 Hành động
@@ -129,36 +131,26 @@ export default function MovieManagement() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {movies.map((movie) => (
+            {users.map((user, index) => (
               <tr
-                key={movie.maPhim}
                 className="odd:bg-white even:bg-gray-50 border-b border-gray-200 hover:bg-gray-100 transition"
+                key={index}
               >
                 <th
                   scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                  className="px-8 py-4 font-medium text-gray-900 whitespace-nowrap"
                 >
-                  {movie.maPhim}
+                  {offset + index + 1}
                 </th>
-
-                <td className="px-6 py-4">
-                  <img
-                    src={movie.hinhAnh}
-                    alt={movie.biDanh || movie.tenPhim}
-                    className="w-16 h-24 object-cover rounded-md border border-gray-200"
-                  />
-                </td>
-
-                <td className="px-6 py-4 text-gray-800">{movie.tenPhim}</td>
-
-                <td className="px-6 py-4 text-gray-700 line-clamp-2">
-                  {movie.moTa || "—"}
-                </td>
-
-                <td className="px-6 py-4 text-center align-middle">
-                  <div className="flex justify-center items-center gap-3">
+                <td className="px-6 py-4 text-gray-800">{user.taiKhoan}</td>
+                <td className="px-6 py-4 text-gray-800">{user.matKhau}</td>
+                <td className="px-6 py-4 text-gray-800">{user.hoTen}</td>
+                <td className="px-6 py-4 text-gray-800">{user.email}</td>
+                <td className="px-6 py-4 text-gray-800">{user.soDt}</td>
+                <td className="px-6 py-4 ">
+                  <div className="flex gap-3">
                     {/* Sửa */}
-                    <button onClick={() => handleEditMovie(movie.maPhim)}>
+                    <button>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-6 h-6 text-blue-500 hover:text-blue-700 cursor-pointer"
@@ -170,7 +162,7 @@ export default function MovieManagement() {
                     </button>
 
                     {/* Xóa */}
-                    <button onClick={() => handleDeleteMovie(movie.maPhim)}>
+                    <button onClick={() => handleDeleteUser(user.taiKhoan)}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-6 h-6 text-red-500 hover:text-red-700 cursor-pointer"
@@ -180,24 +172,12 @@ export default function MovieManagement() {
                         <path d="M232.7 69.9L224 96L128 96C110.3 96 96 110.3 96 128C96 145.7 110.3 160 128 160L512 160C529.7 160 544 145.7 544 128C544 110.3 529.7 96 512 96L416 96L407.3 69.9C402.9 56.8 390.7 48 376.9 48L263.1 48C249.3 48 237.1 56.8 232.7 69.9zM512 208L128 208L149.1 531.1C150.7 556.4 171.7 576 197 576L443 576C468.3 576 489.3 556.4 490.9 531.1L512 208z" />
                       </svg>
                     </button>
-
-                    {/* Tạo lịch chiếu */}
-                    <button onClick={() => handledShowTimesMovie(movie.maPhim)}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 text-red-500 hover:text-red-700 cursor-pointer"
-                        viewBox="0 0 640 640"
-                        fill="currentColor"
-                      >
-                        <path d="M192 64C156.7 64 128 92.7 128 128L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 234.5C512 217.5 505.3 201.2 493.3 189.2L386.7 82.7C374.7 70.7 358.5 64 341.5 64L192 64zM453.5 240L360 240C346.7 240 336 229.3 336 216L336 122.5L453.5 240z" />
-                      </svg>
-                    </button>
                   </div>
                 </td>
               </tr>
             ))}
 
-            {movies.length === 0 && (
+            {users.length === 0 && (
               <tr>
                 <td
                   colSpan={7}
