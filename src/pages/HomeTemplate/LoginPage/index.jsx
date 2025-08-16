@@ -41,7 +41,7 @@ export default function LoginPage() {
         setMessage(`Đăng nhập thành công! Chuyển trang sau ${timeLeft} giây...`);
         if (timeLeft <= 0) {
           clearInterval(timer);
-          navigate(user.maLoaiNguoiDung === "QuanTri" ? "/admin/dashboard" : "/");
+          navigate(user.maLoaiNguoiDung === "QuanTri" ? "/admin/movies-management" : "/");
         }
       }, 1000);
     },
