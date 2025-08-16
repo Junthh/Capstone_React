@@ -7,6 +7,7 @@ import { format, parse } from "date-fns"; // thay parseISO bằng parse
 import { useForm } from "react-hook-form";
 import { useMemo, useEffect } from "react";
 
+
 export const schema = z.object({
   tenPhim: z.string().min(1, "vui lòng nhập thông tin"),
   trailer: z.string().url("vui lòng nhập đúng định dạng URL"),
@@ -14,7 +15,6 @@ export const schema = z.object({
   trangThai: z.enum(["true", "false"]).optional(), // radio
   Hot: z.boolean().optional(),
   maNhom: z.string().optional(),
-  danhGia: z.string().regex(/^([0-9]|10)$/gm, "vui long nhap tu 0 - 10"),
   ngayKhoiChieu: z.any().optional(), // Date nhờ valueAsDate
 });
 
@@ -66,12 +66,12 @@ export default function EditMovie() {
       navigate("/admin/movies-management");
     },
     onError: (error) => {
-      if (error?.response) {
-        console.log("STATUS:", error.response.status);
-        console.log("DATA:", error.response.data);
+      const res = error?.response?.data;
+      if (res?.content) {
+        alert(res.content); // 👉 show "Tài khoản đã tồn tại!"
+      } else {
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
       }
-      alert("Cập nhật thất bại");
-      console.error(error);
     },
   });
 
@@ -124,7 +124,7 @@ export default function EditMovie() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-gray-900">Chỉnh sửa phim</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 ml-[-150px]">Chỉnh sửa phim</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -134,7 +134,7 @@ export default function EditMovie() {
         <div className="flex items-center gap-4">
           <label
             htmlFor="tenPhim"
-            className="w-32 text-sm font-medium text-gray-700"
+            className="w-32 text-sm font-medium text-gray-700 "
           >
             Tên phim
           </label>
@@ -334,7 +334,7 @@ export default function EditMovie() {
           <button
             type="submit"
             disabled={isPending}
-            className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50"
+            className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 ml-[-100px]"
           >
             {isPending ? "Đang lưu..." : "Cập nhật"}
           </button>

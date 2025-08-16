@@ -35,7 +35,7 @@ export default function AdminTemplate() {
         </div>
 
         {/* Footer */}
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </>
   );

@@ -1,10 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTypeUser, getUserByAccount, updateUserApi } from "../../../services/user.api";
+import {
+  getTypeUser,
+  getUserByAccount,
+  updateUserApi,
+} from "../../../services/user.api";
 
 // (tuỳ bạn, có thể bật lại validate)
 const schema = z.object({
@@ -20,6 +24,7 @@ const schema = z.object({
 export default function EditUser() {
   const { taiKhoan: routeTK } = useParams();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: {
@@ -55,16 +60,14 @@ export default function EditUser() {
     if (!user) return;
 
     const mappedLoai =
-      user?.loaiNguoiDung?.maLoaiNguoiDung ??
-      user?.maLoaiNguoiDung ??
-      "";
+      user?.loaiNguoiDung?.maLoaiNguoiDung ?? user?.maLoaiNguoiDung ?? "";
 
     reset({
       taiKhoan: user.taiKhoan ?? routeTK ?? "",
-      matKhau: "",                    // thường API không trả mật khẩu
+      matKhau: user.matKhau ?? "", // thường API không trả mật khẩu
       hoTen: user.hoTen ?? "",
       email: user.email ?? "",
-      soDt: user.soDT ?? "",          // API hay là soDT (T hoa)
+      soDt: user.soDT ?? "", // API hay là soDT (T hoa)
       maLoaiNguoiDung: mappedLoai,
       maNhom: user.maNhom ?? "GP01",
     });
@@ -77,8 +80,12 @@ export default function EditUser() {
       navigate("/admin/user-management");
     },
     onError: (error) => {
-      console.log("Update error:", error?.response?.data || error);
-      alert("Cập nhật thất bại");
+      const res = error?.response?.data;
+      if (res?.content) {
+        alert(res.content); // 👉 show "Tài khoản đã tồn tại!"
+      } else {
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
+      }
     },
   });
 
@@ -90,12 +97,22 @@ export default function EditUser() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-gray-900">Cập nhật người dùng</h1>
+      <h1 className="text-2xl font-semibold text-gray-900">
+        Cập nhật người dùng
+      </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-2xl mx-auto">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-5 max-w-2xl mx-auto"
+      >
         {/* Tài khoản */}
         <div className="flex items-center gap-4">
-          <label htmlFor="taiKhoan" className="w-32 text-sm font-medium text-gray-700">Tài khoản</label>
+          <label
+            htmlFor="taiKhoan"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Tài khoản
+          </label>
           <div>
             <input
               type="text"
@@ -104,27 +121,55 @@ export default function EditUser() {
               {...register("taiKhoan")}
               readOnly
             />
-            {errors.taiKhoan && <p className="text-red-600 text-xs mt-1">{errors.taiKhoan.message}</p>}
+            {errors.taiKhoan && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.taiKhoan.message}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Mật khẩu */}
         <div className="flex items-center gap-4">
-          <label htmlFor="matKhau" className="w-32 text-sm font-medium text-gray-700">Mật khẩu</label>
-          <div>
+          <label
+            htmlFor="matKhau"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Mật khẩu
+          </label>
+          <div className="relative w-96">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="matKhau"
-              className="w-96 rounded-lg border p-2.5 text-sm bg-gray-50"
+              placeholder="Nhập mật khẩu"
+              className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               {...register("matKhau")}
             />
-            {errors.matKhau && <p className="text-red-600 text-xs mt-1">{errors.matKhau.message}</p>}
+            {/* Nút hiển thị ẩn/hiện */}
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+
+            {errors.matKhau && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.matKhau.message}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Họ tên */}
         <div className="flex items-center gap-4">
-          <label htmlFor="hoTen" className="w-32 text-sm font-medium text-gray-700">Họ tên</label>
+          <label
+            htmlFor="hoTen"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Họ tên
+          </label>
           <div>
             <input
               type="text"
@@ -132,13 +177,22 @@ export default function EditUser() {
               className="w-96 rounded-lg border p-2.5 text-sm bg-gray-50"
               {...register("hoTen")}
             />
-            {errors.hoTen && <p className="text-red-600 text-xs mt-1">{errors.hoTen.message}</p>}
+            {errors.hoTen && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.hoTen.message}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Email */}
         <div className="flex items-center gap-4">
-          <label htmlFor="email" className="w-32 text-sm font-medium text-gray-700">Email</label>
+          <label
+            htmlFor="email"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
           <div>
             <input
               type="text"
@@ -146,27 +200,43 @@ export default function EditUser() {
               className="w-96 rounded-lg border p-2.5 text-sm bg-gray-50"
               {...register("email")}
             />
-            {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Số điện thoại */}
         <div className="flex items-center gap-4">
-          <label htmlFor="soDt" className="w-32 text-sm font-medium text-gray-700">Số điện thoại</label>
+          <label
+            htmlFor="soDt"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Số điện thoại
+          </label>
           <div>
             <input
               type="text"
               id="soDt"
               className="w-96 rounded-lg border p-2.5 text-sm bg-gray-50"
-              {...register("soDt")}       // ✅ đúng key
+              {...register("soDt")} // ✅ đúng key
             />
-            {errors.soDt && <p className="text-red-600 text-xs mt-1">{errors.soDt.message}</p>}
+            {errors.soDt && (
+              <p className="text-red-600 text-xs mt-1">{errors.soDt.message}</p>
+            )}
           </div>
         </div>
 
         {/* Loại người dùng */}
         <div className="flex items-center gap-4">
-          <label htmlFor="maLoaiNguoiDung" className="w-32 text-sm font-medium text-gray-700">Loại người dùng</label>
+          <label
+            htmlFor="maLoaiNguoiDung"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Loại người dùng
+          </label>
           <div>
             <select
               id="maLoaiNguoiDung"
@@ -180,13 +250,22 @@ export default function EditUser() {
                 </option>
               ))}
             </select>
-            {errors.maLoaiNguoiDung && <p className="text-red-600 text-xs mt-1">{errors.maLoaiNguoiDung.message}</p>}
+            {errors.maLoaiNguoiDung && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.maLoaiNguoiDung.message}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Nhóm */}
         <div className="flex items-center gap-4">
-          <label htmlFor="maNhom" className="w-32 text-sm font-medium text-gray-700">Mã nhóm</label>
+          <label
+            htmlFor="maNhom"
+            className="w-32 text-sm font-medium text-gray-700"
+          >
+            Mã nhóm
+          </label>
           <div>
             <input
               type="text"
@@ -194,7 +273,11 @@ export default function EditUser() {
               className="w-96 rounded-lg border p-2.5 text-sm bg-gray-50"
               {...register("maNhom")}
             />
-            {errors.maNhom && <p className="text-red-600 text-xs mt-1">{errors.maNhom.message}</p>}
+            {errors.maNhom && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.maNhom.message}
+              </p>
+            )}
           </div>
         </div>
 

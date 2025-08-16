@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,7 @@ const schema = z.object({
 
 export default function AddUser() {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit, formState } = useForm({
     defaultValues: {
@@ -96,27 +97,34 @@ export default function AddUser() {
 
         {/* Mật khẩu */}
         <div className="flex items-center gap-4">
-          <label
-            htmlFor="matKhau"
-            className="w-32 text-sm font-medium text-gray-700"
-          >
-            Mật khẩu
-          </label>
-          <div>
-            <input
-              type="password"
-              id="matKhau"
-              placeholder="Nhập mật khẩu"
-              className="w-96 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              {...register("matKhau")}
-            />
-            {errors.matKhau && (
-              <p className="text-red-600 text-xs mt-1">
-                {errors.matKhau.message}
-              </p>
-            )}
-          </div>
-        </div>
+      <label
+        htmlFor="matKhau"
+        className="w-32 text-sm font-medium text-gray-700"
+      >
+        Mật khẩu
+      </label>
+      <div className="relative w-96">
+        <input
+          type={showPassword ? "text" : "password"}
+          id="matKhau"
+          placeholder="Nhập mật khẩu"
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          {...register("matKhau")}
+        />
+        {/* Nút hiển thị ẩn/hiện */}
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+        >
+          {showPassword ? "🙈" : "👁️"}
+        </button>
+
+        {errors.matKhau && (
+          <p className="text-red-600 text-xs mt-1">{errors.matKhau.message}</p>
+        )}
+      </div>
+    </div>
 
         {/* Họ tên */}
         <div className="flex items-center gap-4">

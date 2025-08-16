@@ -84,7 +84,7 @@ export default function AddMovie() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-gray-900">Thêm phim</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 ml-[-150px]">Thêm phim</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-3xl mx-auto">
         {/* Tên phim */}
@@ -218,7 +218,7 @@ export default function AddMovie() {
           <button
             type="submit"
             disabled={isPending}
-            className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50"
+            className="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 ml-[-100px]"
           >
             {isPending ? "Đang lưu..." : "Submit"}
           </button>
