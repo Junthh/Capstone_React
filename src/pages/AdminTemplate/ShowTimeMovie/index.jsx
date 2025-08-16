@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getCinemaInforBySystem,
   getSystemInfoCinema,
-} from "../../../services/Cinema.api";
+} from "../../../services/cinema.api";
 import { useParams, useNavigate } from "react-router-dom";
 import { getMovieIdApi } from "../../../services/movieAd.api";
 import z from "zod";
