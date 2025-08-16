@@ -12,6 +12,11 @@ import Dashboard from "../pages/AdminTemplate/Dashboard";
 import MovieManagement from "../pages/AdminTemplate/MovieManagement";
 import AddMovie from "../pages/AdminTemplate/AddMovie";
 import AuthenPage from "../pages/AdminTemplate/AuthenPage";
+import EditMovie from "../pages/AdminTemplate/EditMovie";
+import ShowTimeMovie from "../pages/AdminTemplate/ShowTimeMovie";
+import UserManagement from "../pages/AdminTemplate/UserManagement";
+import AddUser from "../pages/AdminTemplate/AddUser";
+import EditUser from "../pages/AdminTemplate/EditUser";
 
 
 const routes = [
@@ -57,10 +62,10 @@ const routes = [
     path: "admin",
     element: AdminTemplate,
     nested: [
-      {
-        path: "dashboard",
-        element: Dashboard,
-      },
+      // {
+      //   path: "dashboard",
+      //   element: Dashboard,
+      // },
       {
         path: "movies-management",
         element: MovieManagement,
@@ -68,6 +73,26 @@ const routes = [
       {
         path: "movies-management/add-movie",
         element: AddMovie,
+      },
+      {
+        path: "movies-management/edit-movie/:movieId",
+        element: EditMovie,
+      },
+      {
+        path: "movies-management/show-time/:movieId",
+        element: ShowTimeMovie,
+      },
+      {
+        path: "user-management",
+        element: UserManagement,
+      },
+      {
+        path: "user-management/add-user",
+        element: AddUser,
+      },
+      {
+        path: "user-management/edit-user/:taiKhoan",
+        element: EditUser,
       }
     ],
   },
