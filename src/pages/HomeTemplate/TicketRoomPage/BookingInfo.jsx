@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function BookingInfo({ 
   onConfirmBooking, 
@@ -8,6 +9,7 @@ export default function BookingInfo({
   const user = useSelector((state) => state.authSlice.user);
 
   const { selectedSeats, ticketRoomInfo, totalPrice } = useSelector((state) => state.ticketBookingSlice);
+  const navigate = useNavigate();
   const formatSeatName = (seat) => {
     if (!seat || !seat.stt) return '';
     const row = Math.ceil(seat.stt / 16);
@@ -126,7 +128,7 @@ export default function BookingInfo({
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-3">Vui lòng đăng nhập để đặt vé</p>
             <button 
-              onClick={() => window.location.href = '/login'}
+              onClick={() => navigate('/login')}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
               Đăng Nhập
